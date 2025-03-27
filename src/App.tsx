@@ -18,19 +18,21 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      if (inputValue.trim() === '') {
-        setFilteredSuggestions(peopleFromServer);
-      } else {
-        setFilteredSuggestions(
-          peopleFromServer.filter(person =>
-            person.name.toLowerCase().includes(inputValue.toLowerCase()),
-          ),
-        );
-      }
-    }, delay);
+    if (inputValue.trim() !== '') {
+      const handler = setTimeout(() => {
+        if (inputValue.trim() === '') {
+          setFilteredSuggestions(peopleFromServer);
+        } else {
+          setFilteredSuggestions(
+            peopleFromServer.filter(person =>
+              person.name.toLowerCase().includes(inputValue.toLowerCase()),
+            ),
+          );
+        }
+      }, delay);
 
-    return () => clearTimeout(handler);
+      return () => clearTimeout(handler);
+    }
   }, [inputValue, delay]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +82,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
             {filteredSuggestions.length > 0 ? (
               filteredSuggestions.map(person => (
                 <div
-                  key={person.name}
+                  key={person.slug}
                   className="dropdown-item"
                   onClick={() => handleSelect(person)}
                   data-cy="suggestion-item"
